@@ -4,6 +4,7 @@
 // - Insomnia
 //MINIMAL APIs - C# - Minimal APIs
 
+using Microsoft.AspNetCore.Mvc;
 using ProjetoAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,24 +46,37 @@ app.MapGet("/", () => "API de Produtos");
 //GET: /produto/listar
 app.MapGet("/produto/listar", () => 
 {
+    if(produtos.Count > 0)
+    {
     return Results.Ok(produtos);
+    }
+    return Results.NotFound();
+});
+
+//GET: /produto/buscar
+app.MapGet("/produto/buscar/{nome}", (string nome) =>
+{
+    foreach(Produto produtoCadastrado in produtos)
+    {
+        if(produtoCadastrado.Nome == nome)
+        {
+            return Results.Ok(produtoCadastrado);
+        }
+    }
+    return Results.NotFound();
 });
 
 //POST: /produto/cadastrar
-app.MapPost("/produto/cadastrar/{nome}", (string nome) => 
+app.MapPost("/produto/cadastrar", ([FromBody] Produto produto) => 
 {
-    //Criar o objeto e preencher
-    Produto produto = new Produto();
-    produto.Nome = nome;
     //Adicionando dentro da lista
     produtos.Add(produto);
-    return Results.Ok(produtos);
+    return Results.Created("", produto);
 });
 
-//Criar uma funcionalidade para receber informações
-// - Receber informações pela URL da requisição
-// - Receber informações pelo corpo da requisição
-// - Guardar as informações em uma lista
+//Exercicios
+// - Remover produto
+// - Alterar produto
 
 app.Run();
 
