@@ -5,7 +5,7 @@ GET http://localhost:5178
 GET http://localhost:5178/produto/listar
 
 ### Buscar Produto
-GET http://localhost:5178/produto/buscar/Desktop
+GET http://localhost:5178/produto/buscar/6946c1dc-3cea-47f8-b365-9fe149994a20
 
 ### Cadastrar Produto
 POST http://localhost:5178/produto/cadastrar
@@ -14,5 +14,19 @@ Content-Type: application/json
 {
     "nome" : "Bolacha",
     "preco" : 4.5,
-    "quantidade" : 156
+    "quantidade" : 153,
+    "descricao" : "Alimento"
+}
+
+### Deletar produto
+DELETE http://localhost:5178/produto/deletar/1f191d7b-18fb-4ba4-8e92-03c87b958c83
+
+### Alterar produto
+PUT http://localhost:5178/produto/alterar/873359c6-de25-4aa3-ade1-22eae039a3a5
+Content-Type: application/json
+
+{
+    "nome" : "Água",
+    "preco" : 4.5,
+    "quantidade" : 153
 }

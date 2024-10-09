@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<AppDataContext>();
 var app = builder.Build();
 
 
@@ -40,43 +41,79 @@ produtos.Add(new Produto()
 
 //EndPoints - Funcionalidades
 //Request - Configurar a URL e o método/verbo HTTP
-//Response - Retornar os dados (json/xml) e status
+//Response - Retornar os dados (json/xml) e códigos de status HTTP
 app.MapGet("/", () => "API de Produtos");
 
 //GET: /produto/listar
-app.MapGet("/produto/listar", () => 
+app.MapGet("/produto/listar", ([FromServices] AppDataContext ctx) => 
 {
-    if(produtos.Count > 0)
+    if(ctx.Produtos.Any())
     {
-    return Results.Ok(produtos);
+    return Results.Ok(ctx.Produtos.ToList());
     }
     return Results.NotFound();
 });
 
 //GET: /produto/buscar
-app.MapGet("/produto/buscar/{nome}", (string nome) =>
+app.MapGet("/produto/buscar/{id}", ([FromRoute] string id, [FromServices] AppDataContext ctx) =>
 {
-    foreach(Produto produtoCadastrado in produtos)
+    //Expressão lambda em C#
+    //Produto? produto = ctx.Produtos.FirstOrDefault(x => x.Nome == "Variável com o nome do produto");
+    //List<Produto> lista = ctx.Produtos.Where(x => x.Quantidade > 10).ToList();
+    Produto? produto = ctx.Produtos.Find(id);
+    if (produto == null)
     {
-        if(produtoCadastrado.Nome == nome)
-        {
-            return Results.Ok(produtoCadastrado);
-        }
+        return Results.NotFound();
     }
-    return Results.NotFound();
+    return Results.Ok(produto);
 });
 
+//BUSCAR PELO ID
+// app.MapGet("/produto/buscar/{id}", ([FromRoute] string id) =>
+// {
+//     Expressão lambda em C#    
+//     Produto? produto = produtos.Find(x => x.Id == id);
+//     if (produto ==null)
+//     {
+//         return Results.NotFound();
+//     }
+//     return Results.Ok(produto);
+// });
+
 //POST: /produto/cadastrar
-app.MapPost("/produto/cadastrar", ([FromBody] Produto produto) => 
+app.MapPost("/produto/cadastrar", ([FromBody] Produto produto, [FromServices] AppDataContext ctx) => 
 {
     //Adicionando dentro da lista
-    produtos.Add(produto);
+    ctx.Produtos.Add(produto);
+    ctx.SaveChanges();
     return Results.Created("", produto);
 });
 
-//Exercicios
-// - Remover produto
-// - Alterar produto
+//DELETE: /produto/deletar/{id}
+app.MapDelete("/produto/deletar/{id}", ([FromRoute] string id) =>
+{
+    Produto? produto = produtos.Find(x => x.Id == id);
+    if (produto == null)
+    {
+        return Results.NotFound();
+    }
+    produtos.Remove(produto);
+    return Results.Ok(produto);
+});
+
+//PUT: /produto/alterar/{id}
+app.MapPut("/produto/alterar/{id}", ([FromRoute] string id, [FromBody] Produto produtoAlterado) =>
+{
+    Produto? produto = produtos.Find(x => x.Id == id);
+    if (produto == null)
+    {
+        return Results.NotFound();
+    }
+    produto.Nome = produtoAlterado.Nome;
+    produto.Quantidade = produtoAlterado.Quantidade;
+    produto.Preco = produtoAlterado.Preco;
+    return Results.Ok(produto);
+});
 
 app.Run();
 
