@@ -9,6 +9,14 @@ using ProjetoAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
+builder.Services.AddCors(options => 
+    options.AddPolicy("Acesso Total", 
+        configs => configs
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod())
+);
+
 var app = builder.Build();
 
 
@@ -114,6 +122,8 @@ app.MapPut("/produto/alterar/{id}", ([FromRoute] string id, [FromBody] Produto p
     produto.Preco = produtoAlterado.Preco;
     return Results.Ok(produto);
 });
+
+app.UseCors("Acesso Total");
 
 app.Run();
 
