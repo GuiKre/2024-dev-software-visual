@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 function ConsultarCEP(){
-
+    //Variáveis, constantes e estados
     const [cep, setCep] = useState("");
     const [bairro, setBairro] = useState("");
     const [estado, setEstado] = useState("");
@@ -10,13 +10,13 @@ function ConsultarCEP(){
     useEffect(() => {
         // Função utilizada para executar algum código ao abrir ou renderizar o componente
         // AXIOS biblioteca de requisições HTTP
-        fetch("http://localhost:5178/produto/listar")
-            .then(resposta => {
-                return resposta.json();
-            })
-            .then(produtos => {
-                console.log(produtos);
-            })
+        // fetch("http://localhost:5178/produto/listar")
+        //     .then(resposta => {
+        //         return resposta.json();
+        //     })
+        //     .then(produtos => {
+        //         console.log(produtos);
+        //     })
     });
 
     function digitar(e : any){
@@ -35,6 +35,17 @@ function ConsultarCEP(){
             })
     }
     
+    function clicar(){
+        fetch("https://viacep.com.br/ws/" + cep + "/json/")
+            .then(resposta => {
+                return resposta.json();
+            })
+            .then(cep => {
+                setBairro(cep.bairro);
+                setEstado(cep.estado);
+                setLogradouro(cep.logradouro);
+            })
+    }
 
     return (
         <div>        
@@ -44,6 +55,8 @@ function ConsultarCEP(){
             placeholder="Digite o CEP"
             onChange={digitar}
             onBlur={sairCaixaTexto}/>
+
+            <button onClick={clicar}>Consultar</button>
 
             <p>{bairro}</p>
             <p>{estado}</p>
