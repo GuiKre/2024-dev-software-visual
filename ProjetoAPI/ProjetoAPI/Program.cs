@@ -9,7 +9,7 @@ using ProjetoAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
-builder.Services.AddCors(options => 
+builder.Services.AddCors(options =>
     options.AddPolicy("Acesso Total", 
         configs => configs
             .AllowAnyOrigin()
