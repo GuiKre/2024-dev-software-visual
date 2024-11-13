@@ -5,6 +5,7 @@
 //MINIMAL APIs - C# - Minimal APIs
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjetoAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,12 +53,22 @@ produtos.Add(new Produto()
 //Response - Retornar os dados (json/xml) e códigos de status HTTP
 app.MapGet("/", () => "API de Produtos");
 
+//GET: /categoria/listar
+app.MapGet("/categoria/listar", ([FromServices] AppDataContext ctx) => 
+{
+    if(ctx.Categorias.Any())
+    {
+    return Results.Ok(ctx.Categorias.ToList());
+    }
+    return Results.NotFound();
+});
+
 //GET: /produto/listar
 app.MapGet("/produto/listar", ([FromServices] AppDataContext ctx) => 
 {
     if(ctx.Produtos.Any())
     {
-    return Results.Ok(ctx.Produtos.ToList());
+    return Results.Ok(ctx.Produtos.Include(x => x.Categoria).ToList());
     }
     return Results.NotFound();
 });
@@ -91,10 +102,24 @@ app.MapGet("/produto/buscar/{id}", ([FromRoute] string id, [FromServices] AppDat
 //POST: /produto/cadastrar
 app.MapPost("/produto/cadastrar", ([FromBody] Produto produto, [FromServices] AppDataContext ctx) => 
 {
-    //Adicionando dentro da lista
+    Categoria? categoria = ctx.Categorias.Find(produto.CategoriaId);
+    if(categoria is null)
+    {
+        return Results.NotFound();
+    }
+    produto.Categoria = categoria;
     ctx.Produtos.Add(produto);
     ctx.SaveChanges();
     return Results.Created("", produto);
+});
+
+//POST: /categoria/cadastrar
+app.MapPost("/categoria/cadastrar", ([FromBody] Categoria categoria, [FromServices] AppDataContext ctx) => 
+{
+    //Adicionando dentro da lista
+    ctx.Categorias.Add(categoria);
+    ctx.SaveChanges();
+    return Results.Created("", categoria);
 });
 
 //DELETE: /produto/deletar/{id}

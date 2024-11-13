@@ -26,7 +26,7 @@ namespace ProjetoAPI.Migrations
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("MyProperty")
+                    b.Property<string>("Nome")
                         .HasColumnType("TEXT");
 
                     b.HasKey("CategoriaId");
@@ -38,6 +38,9 @@ namespace ProjetoAPI.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("TEXT");
@@ -56,7 +59,20 @@ namespace ProjetoAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoriaId");
+
                     b.ToTable("Produtos");
+                });
+
+            modelBuilder.Entity("ProjetoAPI.Models.Produto", b =>
+                {
+                    b.HasOne("ProjetoAPI.Models.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
                 });
 #pragma warning restore 612, 618
         }

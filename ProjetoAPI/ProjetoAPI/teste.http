@@ -4,6 +4,9 @@ GET http://localhost:5178
 ### Listar Produtos
 GET http://localhost:5178/produto/listar
 
+### Listar Categorias
+GET http://localhost:5178/categoria/listar
+
 ### Buscar Produto
 GET http://localhost:5178/produto/buscar/6946c1dc-3cea-47f8-b365-9fe149994a20
 
@@ -15,7 +18,17 @@ Content-Type: application/json
     "nome" : "Bolacha",
     "preco" : 4.5,
     "quantidade" : 153,
-    "descricao" : "Alimento"
+    "descricao" : "Alimento",
+    "CategoriaId" : 1
+    
+}
+
+### Cadastrar Categoria
+POST http://localhost:5178/categoria/cadastrar
+Content-Type: application/json
+
+{
+    "nome" : "Roupas"
 }
 
 ### Deletar produto

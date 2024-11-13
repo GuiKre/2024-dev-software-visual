@@ -11,8 +11,8 @@ using ProjetoAPI.Models;
 namespace ProjetoAPI.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    [Migration("20241009115745_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241113132050_Inital")]
+    partial class Inital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,12 +20,35 @@ namespace ProjetoAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
+            modelBuilder.Entity("ProjetoAPI.Models.Categoria", b =>
+                {
+                    b.Property<int>("CategoriaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nome")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoriaId");
+
+                    b.ToTable("Categorias");
+                });
+
             modelBuilder.Entity("ProjetoAPI.Models.Produto", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("CategoriaId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Descricao")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nome")
@@ -39,7 +62,20 @@ namespace ProjetoAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoriaId");
+
                     b.ToTable("Produtos");
+                });
+
+            modelBuilder.Entity("ProjetoAPI.Models.Produto", b =>
+                {
+                    b.HasOne("ProjetoAPI.Models.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Categoria");
                 });
 #pragma warning restore 612, 618
         }
