@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Produto } from "../../../models/Produto";
 
 function ProdutoCadastro() {
-    const [nome, setNome] = useState<string>('');
-    const [descricao, setDescricao] = useState<string>('');
-    const [preco, setPreco] = useState<number>(0);
-    const [quantidade, setQuantidade] = useState<number>(0);
+    const [nome, setNome] = useState("");
+    const [descricao, setDescricao] = useState("");
+    const [quantidade, setQuantidade] = useState("");
+    const [preco, setPreco] = useState("");
 
     function enviarProduto (e: any) {
         e.preventDefault();
@@ -13,8 +13,8 @@ function ProdutoCadastro() {
         const produto : Produto = {
             nome : nome,
             descricao : descricao,
-            quantidade : quantidade,
-            preco : preco
+            quantidade : Number(quantidade),
+            preco : Number(preco)
         };
 
         fetch("http://localhost:5178/produto/cadastrar", 
@@ -35,31 +35,44 @@ function ProdutoCadastro() {
 
     return (
         <div id="cadastrar_produto">
-            <h2>Cadastrar Novo Produto</h2>
             <form onSubmit={enviarProduto}>
-                {/* <div>
+                <div>
                     <label htmlFor="nome">Nome</label>
                     <input type="text" id="nome" name="nome"
-                        onChange={(e: any) => setNome(e.target.value)}/>
-                </div> */}
-                <label>
-                    Nome:
-                    <input type="string" value={nome} onChange={e => setNome(e.target.value)} required />
-                </label>
-                <label>
-                    Descrição:
-                    <input type="string" value={descricao} onChange={e => setDescricao(e.target.value)} required />
-                </label>
-                <label>
-                    Preço:
-                    <input type="number" value={preco} onChange={e => setPreco(Number(e.target.value))} required />
-                </label>
-                <label>
-                    Quantidade:
-                    <input type="number" value={quantidade} onChange={e => setQuantidade(Number(e.target.value))} required />
-                </label>
-                <button type="submit">Cadastrar</button>
+                        required
+                        onChange={(e: any) => setNome(e.target.value)} />
+                </div>
+
+                <div>
+                    <label htmlFor="descricao">Descrição</label>
+                    <input type="text" id="descricao" name="descricao"
+                        onChange={(e: any) => setDescricao(e.target.value)} />
+                </div>
+
+                <div>
+                    <label htmlFor="preco">Preço</label>
+                    <input type="number" id="preco" name="preco" 
+                        onChange={(e: any) => setPreco(e.target.value)} />
+                </div>
+
+                <div>
+                    <label htmlFor="quantidade">Quantidade</label>
+                    <input type="number" id="quantidade" name="quantidade" 
+                        onChange={(e: any) => setQuantidade(e.target.value)} />
+                </div>
+
+                <div>
+                    <label htmlFor="quantidade">Categorias</label>
+                    <select onChange={(e: any) => console.log(e.target.value)}>
+                        <option value="1">Alimentos</option>
+                        <option value="2">Bebidas</option>
+                        <option value="3">Roupas</option>
+                    </select>
+                </div>
+
+                <button type="submit">Cadastrar Produto</button>
             </form>
+
         </div>
     );
 };
