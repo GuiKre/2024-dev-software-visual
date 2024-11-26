@@ -1,0 +1,49 @@
+dotnet new sln --output NomeDaSolução
+dotnet new web --name NomeDoProjeto
+dotnet sln add NomeDoProjeto
+
+
+npx create-react-app my-app --template typescript
+
+Rodar aplicação -> npm start
+
+Instalar dependências -> npm i
+
+Instalar axios -> npm i axios @types/axios
+
+Lembrar de colocar [] no final do useEffect(entre a chave e o parentese(virgula antes))
+
+Listar axios ->
+useEffect(() => {
+  axios
+    .get("http://localhost:5020/api/produto/listar")
+    .then((response) => {
+      setProdutos(response.data);
+    })
+    .catch((error) => {
+      console.error("Erro ao buscar os produtos:", error);
+    });
+}, []);
+
+Deletar axios ->
+function deletar(id: string) {
+    axios
+      .delete(`http://localhost:5020/api/produto/deletar/${id}`)
+      .then((resposta) => {
+        console.log(resposta.data);
+      });
+  }
+
+Cadastrar axios ->
+axios
+  .post("http://localhost:5020/api/produto/cadastrar", produto, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+  .then((response) => {
+    console.log("Produto cadastrado", response.data);
+  })
+  .catch((error) => {
+    console.error("Erro ao cadastrar o produto:", error);
+  });
